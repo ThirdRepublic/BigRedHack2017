@@ -79,7 +79,7 @@ params = urllib.urlencode({
 })
 
 # The URL of a JPEG image containing text.
-body = "{'url':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Atomist_quote_from_Democritus.png/338px-Atomist_quote_from_Democritus.png'}"
+body = "{'url':'https://preview.ibb.co/f2qWm5/sdfjkdfg.png'}"
 
 try:
     # Execute the REST API call and get the response.
@@ -91,6 +91,8 @@ try:
     # 'data' contains the JSON data. The following formats the JSON data for display.
     parsed = json.loads(data)
 
+    #print(parsed)
+
     xCoords = []
     yCoords = []
     width = []
@@ -100,7 +102,7 @@ try:
     page = []
     row = []
     page.append(row) # dummy row
-    column = [] 
+    column = []
     print ("Response:")
     for dictionary in parsed["regions"][0]["lines"]:
         for item in dictionary["words"]:
@@ -152,7 +154,7 @@ try:
                 print word.getText(),
             print "          ",
         print ""
-    # print (json.dumps(parsed, sort_keys=True, indent=2))
+    print (json.dumps(parsed, sort_keys=True, indent=2))
     conn.close()
 
 
