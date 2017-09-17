@@ -4,7 +4,7 @@
 	$username = $_POST["username"];
 	$password = $_POST["password"];
 	$urlType = $_POST["urlList"];
-	
+
 	$myfile = fopen("data.csv", "a");
 	for($i = 0; $i < count($classNames); $i++){
 		$str = $classNames[$i].",".$urlType[$i].",".$url[$i].",".$username[$i].",".$password[$i]."\n";
@@ -13,7 +13,7 @@
 	}
 	fclose($myfile);
 
-$command = escapeshellcmd('login.py');
+$command = escapeshellcmd('python login.py');
 $output = shell_exec($command);
 echo $output;
 
