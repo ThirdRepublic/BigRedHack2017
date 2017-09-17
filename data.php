@@ -12,7 +12,12 @@
 		fwrite($myfile, $str);
 	}
 	fclose($myfile);
-	
-	header('Location: index.html');
-	exit;
+
+$command = escapeshellcmd('login.py');
+$output = shell_exec($command);
+echo $output;
+
+
+	//header('Location: index.html');
+	//exit;
 ?>
