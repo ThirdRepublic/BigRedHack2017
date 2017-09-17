@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>D-Date</title>
+		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+		<script>
+			
+			var classNames = [];
+		
+			function addClassField(){
+				$(".classesBdy").append("<input class = 'className' type = 'text'/><br>");
+			}
+			
+			function addClassToList(){
+				classNames = [];
+				var classlst = document.getElementsByClassName("className");
+				//classNames = [];
+				for(var i = 0; i < classlst.length; i++){
+					console.log(classlst[i]);
+					classNames.push(classlst[i].value);
+				}
+				addClassSite();
+			}
+			
+			function addClassSite(){
+				$(".sites").append("<select name = 'classNamesLst[]' class = 'classNamesLst'>");
+				for(var i = 0; i < classNames.length; i++){
+					$(".classNamesLst").append("<option value = "+ classNames[i] + ">" + classNames[i] + "</option>");
+				}
+				$(".sites").append("<select class = 'urlList' name = 'urlList[]'>");
+				$(".urlList").append("<option value = 'blackboard'>Blackboard</option>");
+				$(".urlList").append("<option value = 'piazza'>Piazza</option>");
+				$(".urlList").append("<option value = 'email'>Email</option>");
+				$(".urlList").append("<option value = 'other'>Other</option>");
+				$(".sites").append("<input name = 'url[]' type = 'text'/><br>");
+				$(".sites").append("<input name = 'username[]' type = 'text'/><br>");
+				$(".sites").append("<input name = 'password[]' type = 'password'/><br>");
+			}
+			/*
+			function storeData(){
+				var file = fopen("data.csv", 0);
+				if(files!=-1){
+					var cls = document.getElementsByClassName("classNamesLst");
+					var siteopt = document.getElementsByClassName("urlList");
+					var url = document.getELementsByClassName("url");
+					var username = document.getElementsByClassName("username");
+					var password = document.getElementsByClassName("password");
+					for(var i = 0; i < cls.length; i++){
+						var str = "\n" + cls[i].value + "," + siteopt[i].value +","
+								+ url[i].value + "," + username[i].value + ","
+								+ password[i].value;
+					}
+				}
+			}*/
+		</script>
+	</head>
+	<body>
+		<div class = "logo"></div>
+		<div class = "main">
+			<form action = "data.php" method = "POST">
+			<div class = "classes">
+				<div>Please enter your classes: <div onclick = "addClassField()">+</div></div>
+				<div class = "classesBdy">
+					<input class = "className" type = "text"/><br>
+				</div>
+				<div onclick = "addClassToList()">submit</div>
+			</div>
+			<div class = "sites">
+				<div>Please enter all fields:<div  onclick = "addClassSite()">+</div></div>
+				<!--div class = "siteInputField">
+					<select>
+					<select>
+				</div-->
+			</div>
+			<!--button onclick = "storeData()">Save</button-->
+			<input type = "submit">
+			</form>
+		</div>
+	</body>
+</html>
