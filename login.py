@@ -6,6 +6,7 @@ import lxml.html
 import csv
 import OCR
 import googleCalendar
+import duck_King
 
 def cms(url, username, password):
   s = requests.session()
@@ -90,7 +91,10 @@ with open('data.csv', 'rb') as csvfile:
     elif row[1] == "blackboard":
       print row[0] + u"|~|", blackboard(row[2], row[3], row[4])
     elif row[1] == "other":
-      print row[0] + u"|~|", other(row[2])
+      title = row[0]
+      #print row[0] + u"|~|", other(row[2])
+      for event, date in duck_King.duck(other(row[2])):
+        googleCalendar.appendEvent(title,event,date,'00:00:00',date,'00:00:00',False,48,30)
     elif row[1] == "pdf":
       title = row[0]
       for event, date in OCR.crack(row[2]):
