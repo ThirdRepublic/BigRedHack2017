@@ -2,13 +2,120 @@
 <html>
 	<head>
 		<title>D-Date</title>
+		<link href="https://fonts.googleapis.com/css?family=Didact+Gothic" rel="stylesheet">
+		<style>
+			body{
+				background-color:#363034;
+				font-family: 'Didact Gothic', sans-serif;
+				font-size: 17pt;
+			}
+			#help{
+				color: #363034;
+				background-color: #f9efef;
+				border-radius: 13px;
+				position: fixed;
+				bottom: 7px;
+				right: 7px;
+				width: 25px;
+				text-align: center;
+				font-family: 'Didact Gothic', sans-serif;
+				font-size: 15pt;
+			}
+			.fixed{
+				position: fixed;
+				left: 0px;
+				top: 0px;
+				bottom: 0px;
+				right: 0px;
+			}
+			.contain{
+				background-color: #f9efef;
+				margin: 0 auto;
+				margin-top: 15%;
+				width: 400px;
+				border-radius: 10px;
+				text-align: center;
+				padding: 15px;
+				opacity: 1;
+				overflow: auto;
+				/*-webkit-transition: opacity 0.5s;*/
+			}
+			/*
+			.contain:hover{
+				opacity: 1;
+				-webkit-transition: opacity 0.5s;
+			}*/
+			.slogan{
+				color: #363034;
+				font-size: 15pt;
+				font-family: 'Didact Gothic', sans-serif;
+				letter-spacing: 3px;
+				
+			}
+			.classes{
+				display: none;
+				opacity: 0;
+				-webkit-transition: opacity 0.5s;
+			}
+			.classesDisplay{
+				display: block;
+				opacity: 1;
+				-webkit-transition: opacity 1s;
+			}
+			
+			.sites{
+				display: none;
+				opacity: 0;
+				-webkit-transition: opacity 0.5s;
+			}
+			.sitesDisplay{
+				opacity: 1;
+				display: block;
+				-webkit-transition: opacity 0.5s;
+			}
+			.buttons{
+				font-family: 'Didact Gothic', sans-serif;
+				font-size: 13pt;
+				color: #363034;
+				width: 100px;
+				-webkit-transition: color 0.5s;
+				width: auto;
+			}
+			.buttons:hover{
+				color: red;
+				-webkit-transition: color 0.5s;
+			}
+			.getStarted{
+				padding-top: 40px;
+				font-family: 'Didact Gothic', sans-serif;
+				font-size: 20pt;
+				color: #363034;
+				-webkit-transition: color 0.5s;
+				width: auto;
+			}
+			.getStarted:hover{
+				color: red;
+				-webkit-transition: color 0.5s;
+			}
+			#submitbtn{
+				border: none;
+				background-color: #f9efef;
+			}
+		</style>
 		<script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 		<script>
 			
+			var counter = 0;
 			var classNames = [];
 		
+			function getStarted(){
+				//$(".classes").show();
+				$(".classes").toggleClass("classesDisplay");
+				$("#starting").hide();
+			}
+		
 			function addClassField(){
-				$(".classesBdy").append("<input class = 'className' type = 'text'/><br>");
+				$(".classesBdy").append("<input class = 'className' type = 'text' placeholder = 'Enter Class Name'/><br>");
 			}
 			
 			function addClassToList(){
@@ -20,21 +127,27 @@
 					classNames.push(classlst[i].value);
 				}
 				addClassSite();
+				$(".sites").toggleClass("sitesDisplay");
+				$(".classes").hide();
+				//$(".sites").show();
+				$(".contain").height("290px");
 			}
 			
 			function addClassSite(){
-				$(".sites").append("<select name = 'classNamesLst[]' class = 'classNamesLst'>");
+				$(".sitecontent").append("<select name = 'classNamesLst[]' class = 'classNamesLst'>");
 				for(var i = 0; i < classNames.length; i++){
 					$(".classNamesLst").append("<option value = "+ classNames[i] + ">" + classNames[i] + "</option>");
 				}
-				$(".sites").append("<select class = 'urlList' name = 'urlList[]'>");
-				$(".urlList").append("<option value = 'blackboard'>Blackboard</option>");
-				$(".urlList").append("<option value = 'piazza'>Piazza</option>");
-				$(".urlList").append("<option value = 'email'>Email</option>");
-				$(".urlList").append("<option value = 'other'>Other</option>");
-				$(".sites").append("<input name = 'url[]' type = 'text'/><br>");
-				$(".sites").append("<input name = 'username[]' type = 'text'/><br>");
-				$(".sites").append("<input name = 'password[]' type = 'password'/><br>");
+				$(".sitecontent").append("<select id = 'urlList"+counter+"' name = 'urlList[]'>");
+				$("#urlList"+counter).append("<option value = 'blackboard'>Blackboard</option>");
+				$("#urlList"+counter).append("<option value = 'piazza'>Piazza</option>");
+				$("#urlList"+counter).append("<option value = 'email'>Email</option>");
+				$("#urlList"+counter).append("<option value = 'other'>Other</option>");
+				$(".sitecontent").append("<br>");
+				$(".sitecontent").append("<input placeholder = 'url of the selected site' name = 'url[]' type = 'text'/><br>");
+				$(".sitecontent").append("<input placeholder = 'Username for selected site' name = 'username[]' type = 'text'/><br>");
+				$(".sitecontent").append("<input placeholder = 'Password for selected site' name = 'password[]' type = 'password'/><br>");
+				counter++;
 			}
 			/*
 			function storeData(){
@@ -55,26 +168,41 @@
 		</script>
 	</head>
 	<body>
-		<div class = "logo"></div>
+		<div class = "fixed">
+		<div class = "contain">
+		<div id = "starting">
+		<div class = "logo"><img src = "img/logo.png"></div>
+		<div class = "slogan">Be Proactive, Not Reactive.</div>
+		<div class = "getStarted" onclick = "getStarted()">Get Started</div>
+		</div>
 		<div class = "main">
 			<form action = "data.php" method = "POST">
 			<div class = "classes">
-				<div>Please enter your classes: <div onclick = "addClassField()">+</div></div>
+			<div class = "logo"><img src = "img/logo.png"></div>
+			
+				<div>Please enter your classes:</div>
 				<div class = "classesBdy">
-					<input class = "className" type = "text"/><br>
+					<input class = "className" type = "text" placeholder = 'Enter Class Name'/><br>
 				</div>
-				<div onclick = "addClassToList()">submit</div>
+				<span class = "buttons" onclick = "addClassField()">Add Class</span><span class = "buttons"> | </span>
+				<span class = "buttons" onclick = "addClassToList()">Next</span>
 			</div>
 			<div class = "sites">
-				<div>Please enter all fields:<div  onclick = "addClassSite()">+</div></div>
+				<div class = "sitecontent">
+				<div class = "logo"><img src = "img/logo.png"></div>
+				<div>Please enter all fields:</div>
 				<!--div class = "siteInputField">
 					<select>
 					<select>
 				</div-->
+				</div>
+				<span class = "buttons" onclick = "addClassSite()">Add Classes</span><span class = "buttons"> | </span><input class = "buttons" id = "submitbtn" type = "submit">
 			</div>
 			<!--button onclick = "storeData()">Save</button-->
-			<input type = "submit">
 			</form>
 		</div>
+		</div>
+		</div>
+		<div id = 'help'>?</div>
 	</body>
 </html>
