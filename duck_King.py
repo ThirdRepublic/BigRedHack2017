@@ -30,7 +30,11 @@ for i in rows:
     k = 2
     while k <6:
         if(columns[j+k].text.strip()):
-            print headers[k+1] + " " + columns[j+k].text.strip()
+            print headers[k+1] + ": " + columns[j+k].text.strip(),
+            if(columns[j+k].find('a')):
+                print "http://www.cs.cornell.edu/" + columns[j+k].find('a').get("href")
+            else:
+                print 
             if((columns[j+k].get("colspan"))):
                 print headers[k+2] + " " + columns[j+k].text.strip()
                 k+=(int)(columns[j+k].get("colspan"))
