@@ -31,7 +31,7 @@ def mergeSort(words):
         j=0
         k=0
         while i < len(lefthalf) and j < len(righthalf):
-            if lefthalf[i].getY() < righthalf[j].getY() or (lefthalf[i].getY() == righthalf[j].getY() and lefthalf[i].getX() < righthalf[j].getY()):
+            if lefthalf[i].getY() < righthalf[j].getY() + 5  or (lefthalf[i].getY() == righthalf[j].getY() and lefthalf[i].getX() < righthalf[j].getY()):
                 words[k]=lefthalf[i]
                 i=i+1
             else:
@@ -78,8 +78,10 @@ params = urllib.urlencode({
     'detectOrientation ': 'true',
 })
 
+
+
 # The URL of a JPEG image containing text.
-body = "{'url':'https://preview.ibb.co/f2qWm5/sdfjkdfg.png'}"
+body = "{'url':'https://i.gyazo.com/8970a48c38551e81677cadbc86578038.png'}"
 
 try:
     # Execute the REST API call and get the response.
