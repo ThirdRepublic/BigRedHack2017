@@ -1,6 +1,54 @@
 ########### Python 2.7 #############
 import httplib, urllib, base64, json
 
+# Word class needed to not die over all of the information gathering
+class Word:
+    def __init__(self, x, y, width, text):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.text = text
+    def getX(self):
+        return self.x
+    def getY(self):
+        return self.y
+    def getWidth(self):
+        return self.width
+    def getText(self):
+        return self.text
+
+# words is an array of Word objects
+def mergeSort(words):
+    if len(words)>1:
+        mid = len(words)//2
+        lefthalf = words[:mid]
+        righthalf = words[mid:]
+
+        mergeSort(lefthalf)
+        mergeSort(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i].getY() < righthalf[j].getY() or (lefthalf[i].getY() == righthalf[j].getY() and lefthalf[i].getX() < righthalf[j].getY()):
+                words[k]=lefthalf[i]
+                i=i+1
+            else:
+                words[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            words[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            words[k]=righthalf[j]
+            j=j+1
+            k=k+1
+
 ###############################################
 #### Update or verify the following values. ###
 ###############################################
@@ -42,13 +90,74 @@ try:
 
     # 'data' contains the JSON data. The following formats the JSON data for display.
     parsed = json.loads(data)
+
+    xCoords = []
+    yCoords = []
+    width = []
+    words = []
+    wordList = []
+
+    page = []
+    row = []
+    page.append(row) # dummy row
+    column = [] 
     print ("Response:")
-    print (json.dumps(parsed, sort_keys=True, indent=2))
+    for dictionary in parsed["regions"][0]["lines"]:
+        for item in dictionary["words"]:
+            for key, value in item.items():
+                if ',' in value:
+                    xCoords.append(value.split(',')[0])
+                    yCoords.append(value.split(',')[1])
+                    width.append(value.split(',')[2])
+                else:
+                    words.append(value)
+
+    for i in range(len(words)):
+        z = Word(int(xCoords[i]), int(yCoords[i]), int(width[i]), words[i])
+        wordList.append(z)
+
+    mergeSort(wordList)
+
+    currWord = Word(0, 0, 0, '')
+    prevWord = Word(0, 0, 0, '')
+    for i in range(len(words)):
+        currWord = wordList[i]
+
+        if (currWord.getY() < prevWord.getY() + 5 and currWord.getY() > prevWord.getY() - 5):
+            # print "passed y check"
+            if (currWord.getX() < prevWord.getX() + prevWord.getWidth() + 20 and currWord.getX() > prevWord.getX() + prevWord.getWidth() - 20):
+                # print "passed x check"
+                column.append(currWord)
+            else:
+                # print "failed x check"
+                row.append(column)
+                column = []
+                column.append(currWord)
+        else:
+            # print "failed y check"
+            row.append(column)
+            page.append(row)
+            row = []
+            column = []
+            column.append(currWord)
+
+        prevWord = currWord
+        if (i == len(words) - 1):
+            row.append(column)
+            page.append(row)
+
+    for rows in page:
+        for columns in rows:
+            for word in columns:
+                print word.getText(),
+            print "          ",
+        print ""
+    # print (json.dumps(parsed, sort_keys=True, indent=2))
     conn.close()
+
 
 except Exception as e:
     print('Error:')
     print(e)
 
 ####################################
-
