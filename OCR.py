@@ -104,15 +104,16 @@ try:
     page.append(row) # dummy row
     column = []
     print ("Response:")
-    for dictionary in parsed["regions"][0]["lines"]:
-        for item in dictionary["words"]:
-            for key, value in item.items():
-                if ',' in value:
-                    xCoords.append(value.split(',')[0])
-                    yCoords.append(value.split(',')[1])
-                    width.append(value.split(',')[2])
-                else:
-                    words.append(value)
+    for dictionary in parsed["regions"]:
+        for sub in dictionary["lines"]:
+            for item in sub["words"]:
+                for key in item:
+                    if key == 'boundingBox':
+                        xCoords.append(item[key].split(',')[0])
+                        yCoords.append(item[key].split(',')[1])
+                        width.append(item[key].split(',')[2])
+                    else:
+                        words.append(item[key])
 
     for i in range(len(words)):
         z = Word(int(xCoords[i]), int(yCoords[i]), int(width[i]), words[i])
@@ -154,7 +155,7 @@ try:
                 print word.getText(),
             print "          ",
         print ""
-    print (json.dumps(parsed, sort_keys=True, indent=2))
+    # print (json.dumps(parsed, sort_keys=True, indent=2))
     conn.close()
 
 
