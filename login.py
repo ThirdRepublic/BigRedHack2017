@@ -4,6 +4,7 @@
 import requests
 import lxml.html
 import csv
+import OCR
 
 def cms(url, username, password):
   s = requests.session()
@@ -90,7 +91,7 @@ with open('data.csv', 'rb') as csvfile:
     elif row[1] == "other":
       print row[0] + u"|~|" + other(row[2])
     elif row[1] == "pdf":
-      print row[1]
+      print row[0] + u"|~|" + OCR.crack(row[2])
     else:
       print "NOOO", row[1]
 

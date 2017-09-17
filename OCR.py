@@ -79,90 +79,92 @@ params = urllib.urlencode({
 })
 
 
+def crack(url):
 
-# The URL of a JPEG image containing text.
-body = "{'url':'https://i.gyazo.com/8970a48c38551e81677cadbc86578038.png'}"
+    # The URL of a JPEG image containing text.
+    body = "{'url':'" + url + "'}"
 
-try:
-    # Execute the REST API call and get the response.
-    conn = httplib.HTTPSConnection('eastus2.api.cognitive.microsoft.com')
-    conn.request("POST", "/vision/v1.0/ocr?%s" % params, body, headers)
-    response = conn.getresponse()
-    data = response.read()
+    try:
+        # Execute the REST API call and get the response.
+        conn = httplib.HTTPSConnection('eastus2.api.cognitive.microsoft.com')
+        conn.request("POST", "/vision/v1.0/ocr?%s" % params, body, headers)
+        response = conn.getresponse()
+        data = response.read()
 
-    # 'data' contains the JSON data. The following formats the JSON data for display.
-    parsed = json.loads(data)
+        # 'data' contains the JSON data. The following formats the JSON data for display.
+        parsed = json.loads(data)
 
-    #print(parsed)
+        #print(parsed)
 
-    xCoords = []
-    yCoords = []
-    width = []
-    words = []
-    wordList = []
+        xCoords = []
+        yCoords = []
+        width = []
+        words = []
+        wordList = []
 
-    page = []
-    row = []
-    page.append(row) # dummy row
-    column = []
-    print ("Response:")
-    for dictionary in parsed["regions"]:
-        for sub in dictionary["lines"]:
-            for item in sub["words"]:
-                for key in item:
-                    if key == 'boundingBox':
-                        xCoords.append(item[key].split(',')[0])
-                        yCoords.append(item[key].split(',')[1])
-                        width.append(item[key].split(',')[2])
-                    else:
-                        words.append(item[key])
+        page = []
+        row = []
+        page.append(row) # dummy row
+        column = []
+        #print ("Response:")
+        for dictionary in parsed["regions"]:
+            for sub in dictionary["lines"]:
+                for item in sub["words"]:
+                    for key in item:
+                        if key == 'boundingBox':
+                            xCoords.append(item[key].split(',')[0])
+                            yCoords.append(item[key].split(',')[1])
+                            width.append(item[key].split(',')[2])
+                        else:
+                            words.append(item[key])
 
-    for i in range(len(words)):
-        z = Word(int(xCoords[i]), int(yCoords[i]), int(width[i]), words[i])
-        wordList.append(z)
+        for i in range(len(words)):
+            z = Word(int(xCoords[i]), int(yCoords[i]), int(width[i]), words[i])
+            wordList.append(z)
 
-    mergeSort(wordList)
+        mergeSort(wordList)
 
-    currWord = Word(0, 0, 0, '')
-    prevWord = Word(0, 0, 0, '')
-    for i in range(len(words)):
-        currWord = wordList[i]
+        currWord = Word(0, 0, 0, '')
+        prevWord = Word(0, 0, 0, '')
+        for i in range(len(words)):
+            currWord = wordList[i]
 
-        if (currWord.getY() < prevWord.getY() + 5 and currWord.getY() > prevWord.getY() - 5):
-            # print "passed y check"
-            if (currWord.getX() < prevWord.getX() + prevWord.getWidth() + 20 and currWord.getX() > prevWord.getX() + prevWord.getWidth() - 20):
-                # print "passed x check"
-                column.append(currWord)
+            if (currWord.getY() < prevWord.getY() + 5 and currWord.getY() > prevWord.getY() - 5):
+                # print "passed y check"
+                if (currWord.getX() < prevWord.getX() + prevWord.getWidth() + 20 and currWord.getX() > prevWord.getX() + prevWord.getWidth() - 20):
+                    # print "passed x check"
+                    column.append(currWord)
+                else:
+                    # print "failed x check"
+                    row.append(column)
+                    column = []
+                    column.append(currWord)
             else:
-                # print "failed x check"
+                # print "failed y check"
                 row.append(column)
+                page.append(row)
+                row = []
                 column = []
                 column.append(currWord)
-        else:
-            # print "failed y check"
-            row.append(column)
-            page.append(row)
-            row = []
-            column = []
-            column.append(currWord)
 
-        prevWord = currWord
-        if (i == len(words) - 1):
-            row.append(column)
-            page.append(row)
+            prevWord = currWord
+            if (i == len(words) - 1):
+                row.append(column)
+                page.append(row)
 
-    for rows in page:
-        for columns in rows:
-            for word in columns:
-                print word.getText(),
-            print "          ",
-        print ""
-    # print (json.dumps(parsed, sort_keys=True, indent=2))
-    conn.close()
+        return_string = ""
+        for rows in page:
+            for columns in rows:
+                for word in columns:
+                    return_string += word.getText()
+                return_string += "          "
+            return_string += "\n"
+        # print (json.dumps(parsed, sort_keys=True, indent=2))
+        conn.close()
 
+        return return_string
 
-except Exception as e:
-    print('Error:')
-    print(e)
+    except Exception as e:
+        return "Error:", str(e)
 
 ####################################
