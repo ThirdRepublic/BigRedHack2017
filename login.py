@@ -5,6 +5,7 @@ import requests
 import lxml.html
 import csv
 import OCR
+import googleCalendar
 
 def cms(url, username, password):
   s = requests.session()
@@ -32,7 +33,7 @@ def cms(url, username, password):
 #  print "Page load URL:", r2.url, "\n"
 #  print r2.text
 
-  return r2.text
+  return r2.text.encode('utf-8')
 
 def blackboard(url, username, password):
   s = requests.session()
@@ -69,14 +70,14 @@ def blackboard(url, username, password):
   #print "Page load URL:", r2.url, "\n"
   #print r2.text
 
-  return r2.text
+  return r2.text.encode('utf-8')
 
 def other(url):
   s = requests.session()
 
   page = s.get(url)
 
-  return page.text
+  return page.text.encode('utf-8')
 
 
 # MAIN
@@ -85,13 +86,16 @@ with open('data.csv', 'rb') as csvfile:
   reader = csv.reader(csvfile)
   for row in reader:
     if row[1] == "cms":
-      print row[0] + u"|~|" + cms(row[2], row[3], row[4])
+      print row[0] + u"|~|", cms(row[2], row[3], row[4])
     elif row[1] == "blackboard":
-      print row[0] + u"|~|" + blackboard(row[2], row[3], row[4])
+      print row[0] + u"|~|", blackboard(row[2], row[3], row[4])
     elif row[1] == "other":
-      print row[0] + u"|~|" + other(row[2])
+      print row[0] + u"|~|", other(row[2])
     elif row[1] == "pdf":
-      print row[0] + u"|~|" + OCR.crack(row[2])
+      title = row[0]
+      for event, date in OCR.crack(row[2]):
+        #print event, date
+        googleCalendar.appendEvent(title,event,date,'00:00:00',date,'00:00:00',False,48,30)
     else:
       print "NOOO", row[1]
 

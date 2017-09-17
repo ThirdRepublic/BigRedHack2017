@@ -152,17 +152,37 @@ def crack(url):
                 row.append(column)
                 page.append(row)
 
-        return_string = ""
+        return_list = []
+
+        i = 0
+        date = ""
+        info = ""
         for rows in page:
             for columns in rows:
                 for word in columns:
-                    return_string += word.getText()
-                return_string += "          "
-            return_string += "\n"
+                    if (i==2):
+                        pass
+                    else:
+                        if (word.getText().find("/")>=0):
+                            if (date != ""):
+                                dateArr = date.split("/")
+                                date = '2017-0' + dateArr[0] + '-' + dateArr[1]
+                                return_list.append((info.encode('utf-8'), date))
+                                #return_string += (date + "~~~" + info + "\n")
+                            date = word.getText()
+                            info = ""
+                        else:
+                            info += word.getText() + " "
+#                    return_string += word.getText()
+#                return_string += "          "
+#            return_string += "\n"
+            i += 1
         # print (json.dumps(parsed, sort_keys=True, indent=2))
         conn.close()
 
-        return return_string
+        #return return_string.encode('utf-8')
+        return return_list
+
 
     except Exception as e:
         return "Error:", str(e)
